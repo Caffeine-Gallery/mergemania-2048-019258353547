@@ -20,10 +20,15 @@ h1 {
 
 .score-container {
     display: flex;
-    justify-content: space-between;
+    flex-direction: column;
+    align-items: center;
     margin-bottom: 20px;
     font-size: 18px;
     color: #776e65;
+}
+
+.score-container div {
+    margin: 5px 0;
 }
 
 #game-board {
@@ -70,8 +75,37 @@ h1 {
     padding: 10px 20px;
     font-size: 18px;
     cursor: pointer;
+    margin-bottom: 20px;
 }
 
 #new-game:hover {
     background-color: #9f8b77;
+}
+
+.keyboard-legend {
+    margin-top: 20px;
+    color: #776e65;
+}
+
+.keyboard-legend p {
+    margin-bottom: 10px;
+}
+
+.key-row {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 5px;
+}
+
+.key {
+    display: inline-block;
+    width: 30px;
+    height: 30px;
+    line-height: 30px;
+    text-align: center;
+    background-color: #bbada0;
+    color: #f9f6f2;
+    border-radius: 3px;
+    margin: 0 5px;
+    font-weight: bold;
 }
