@@ -16,6 +16,8 @@ function initializeGame() {
     addNewTile();
     updateBoard();
     updateScore();
+    console.log('Initial board state:');
+    logBoardState();
 }
 
 function addNewTile() {
@@ -61,15 +63,22 @@ function move(direction) {
 
     function pushLeft(row) {
         const filtered = row.filter(cell => cell !== 0);
-        for (let i = 0; i < filtered.length - 1; i++) {
-            if (filtered[i] === filtered[i + 1]) {
-                filtered[i] *= 2;
-                score += filtered[i];
-                filtered[i + 1] = 0;
+        let newRow = [];
+        for (let i = 0; i < filtered.length; i++) {
+            if (i < filtered.length - 1 && filtered[i] === filtered[i + 1]) {
+                newRow.push(filtered[i] * 2);
+                score += filtered[i] * 2;
+                i++;
                 moved = true;
+            } else {
+                newRow.push(filtered[i]);
             }
         }
-        return filtered.filter(cell => cell !== 0).concat(Array(4 - filtered.length).fill(0));
+        newRow = newRow.concat(Array(4 - newRow.length).fill(0));
+        if (JSON.stringify(newRow) !== JSON.stringify(row)) {
+            moved = true;
+        }
+        return newRow;
     }
 
     if (direction === 'left') {
@@ -104,9 +113,15 @@ function move(direction) {
         updateBoard();
         updateScore();
         checkGameOver();
+        console.log('Board state after move:');
+        logBoardState();
     } else {
         console.log('No move made');
     }
+}
+
+function logBoardState() {
+    console.log(board.map(row => row.map(cell => cell.toString().padStart(4, ' ')).join('|')).join('\n'));
 }
 
 function checkGameOver() {
