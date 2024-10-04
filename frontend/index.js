@@ -61,48 +61,62 @@ function move(direction) {
     let moved = false;
     const newBoard = JSON.parse(JSON.stringify(board));
 
-    function pushLeft(row) {
-        const filtered = row.filter(cell => cell !== 0);
-        let newRow = [];
-        for (let i = 0; i < filtered.length; i++) {
-            if (i < filtered.length - 1 && filtered[i] === filtered[i + 1]) {
-                newRow.push(filtered[i] * 2);
-                score += filtered[i] * 2;
-                i++;
+    function pushLine(line) {
+        let newLine = line.filter(cell => cell !== 0);
+        for (let i = 0; i < newLine.length - 1; i++) {
+            if (newLine[i] === newLine[i + 1]) {
+                newLine[i] *= 2;
+                score += newLine[i];
+                newLine.splice(i + 1, 1);
                 moved = true;
-            } else {
-                newRow.push(filtered[i]);
             }
         }
-        newRow = newRow.concat(Array(4 - newRow.length).fill(0));
-        if (JSON.stringify(newRow) !== JSON.stringify(row)) {
-            moved = true;
+        while (newLine.length < 4) {
+            newLine.push(0);
         }
-        return newRow;
+        return newLine;
     }
 
     if (direction === 'left') {
         for (let i = 0; i < 4; i++) {
-            newBoard[i] = pushLeft(newBoard[i]);
+            const newLine = pushLine(newBoard[i]);
+            for (let j = 0; j < 4; j++) {
+                if (newBoard[i][j] !== newLine[j]) {
+                    moved = true;
+                }
+                newBoard[i][j] = newLine[j];
+            }
         }
     } else if (direction === 'right') {
         for (let i = 0; i < 4; i++) {
-            newBoard[i] = pushLeft(newBoard[i].reverse()).reverse();
+            const newLine = pushLine(newBoard[i].reverse()).reverse();
+            for (let j = 0; j < 4; j++) {
+                if (newBoard[i][j] !== newLine[j]) {
+                    moved = true;
+                }
+                newBoard[i][j] = newLine[j];
+            }
         }
     } else if (direction === 'up') {
         for (let j = 0; j < 4; j++) {
             const column = [newBoard[0][j], newBoard[1][j], newBoard[2][j], newBoard[3][j]];
-            const newColumn = pushLeft(column);
+            const newColumn = pushLine(column);
             for (let i = 0; i < 4; i++) {
+                if (newBoard[i][j] !== newColumn[i]) {
+                    moved = true;
+                }
                 newBoard[i][j] = newColumn[i];
             }
         }
     } else if (direction === 'down') {
         for (let j = 0; j < 4; j++) {
             const column = [newBoard[3][j], newBoard[2][j], newBoard[1][j], newBoard[0][j]];
-            const newColumn = pushLeft(column);
+            const newColumn = pushLine(column).reverse();
             for (let i = 0; i < 4; i++) {
-                newBoard[3 - i][j] = newColumn[i];
+                if (newBoard[i][j] !== newColumn[i]) {
+                    moved = true;
+                }
+                newBoard[i][j] = newColumn[i];
             }
         }
     }
@@ -127,11 +141,12 @@ function logBoardState() {
 function checkGameOver() {
     let hasEmptyCell = false;
     let canMerge = false;
+    let has2048 = false;
 
     for (let i = 0; i < 4; i++) {
         for (let j = 0; j < 4; j++) {
             if (board[i][j] === 2048) {
-                alert('Congratulations! You reached 2048! You can continue playing for a higher score.');
+                has2048 = true;
             }
             if (board[i][j] === 0) {
                 hasEmptyCell = true;
@@ -143,6 +158,10 @@ function checkGameOver() {
                 canMerge = true;
             }
         }
+    }
+
+    if (has2048) {
+        alert('Congratulations! You reached 2048! You can continue playing for a higher score.');
     }
 
     if (!hasEmptyCell && !canMerge) {
