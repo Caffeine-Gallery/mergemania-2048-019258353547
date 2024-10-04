@@ -55,6 +55,7 @@ function updateScore() {
 }
 
 function move(direction) {
+    console.log(`Moving ${direction}`);
     let moved = false;
     const newBoard = JSON.parse(JSON.stringify(board));
 
@@ -103,6 +104,8 @@ function move(direction) {
         updateBoard();
         updateScore();
         checkGameOver();
+    } else {
+        console.log('No move made');
     }
 }
 
@@ -132,7 +135,8 @@ function checkGameOver() {
     }
 }
 
-document.addEventListener('keydown', (event) => {
+function handleKeyPress(event) {
+    console.log('Key pressed:', event.key);
     if (event.key === 'ArrowLeft') {
         move('left');
     } else if (event.key === 'ArrowRight') {
@@ -142,7 +146,9 @@ document.addEventListener('keydown', (event) => {
     } else if (event.key === 'ArrowDown') {
         move('down');
     }
-});
+}
+
+document.addEventListener('keydown', handleKeyPress);
 
 newGameButton.addEventListener('click', initializeGame);
 
