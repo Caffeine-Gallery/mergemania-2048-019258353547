@@ -107,24 +107,29 @@ function move(direction) {
 }
 
 function checkGameOver() {
+    let hasEmptyCell = false;
+    let canMerge = false;
+
     for (let i = 0; i < 4; i++) {
         for (let j = 0; j < 4; j++) {
             if (board[i][j] === 2048) {
-                alert('Congratulations! You won!');
-                return;
+                alert('Congratulations! You reached 2048! You can continue playing for a higher score.');
             }
             if (board[i][j] === 0) {
-                return;
+                hasEmptyCell = true;
             }
             if (i < 3 && board[i][j] === board[i + 1][j]) {
-                return;
+                canMerge = true;
             }
             if (j < 3 && board[i][j] === board[i][j + 1]) {
-                return;
+                canMerge = true;
             }
         }
     }
-    alert('Game over!');
+
+    if (!hasEmptyCell && !canMerge) {
+        alert('Game over! No more moves available.');
+    }
 }
 
 document.addEventListener('keydown', (event) => {
